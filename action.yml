@@ -1,0 +1,25 @@
+# action.yml
+name: 'NMinD Coding Standards'
+description: 'Checks if code repository is up to standards'
+inputs:
+  repo:
+    description: 'Github repository in owner/repo format'
+    required: true
+  issue-tracker:
+    description: 'External issue tracking location'
+    required: false
+  language:
+    description: 'Programming language to inspect'
+    required: false
+outputs:
+  code-style:
+    description: 'Pass/Fail for code style'
+  readme:
+    description: 'Pass/Fail for readme'
+  license:
+    description: 'Pass/Fail for license'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.repo }}

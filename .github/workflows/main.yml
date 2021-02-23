@@ -1,0 +1,17 @@
+on: [push]
+
+jobs:
+  hello_world_job:
+    runs-on: ubuntu-latest
+    name: A job to check a repository's compliance with NMinD standards
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: NMinD coding check
+        uses: ./
+        id: check
+        with:
+          repo: 'mgxd/nmind-coding-standards-action'
+      - name: Get the output
+        run: echo "The time was ${{ steps.hello.outputs.time }}"
+
