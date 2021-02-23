@@ -29,7 +29,7 @@ def check_issues(repo: str, alt_issues: str = None) -> bool:
 
 def check_style(repo: Path, language: str) -> bool:
     linters = {
-        "python": f"flake8 {str(repo)}",
+        "python": ["flake8", str(repo)],
     }
     lint_cmd = linters.get(language)
     if lint_cmd is None:
@@ -40,11 +40,11 @@ def check_style(repo: Path, language: str) -> bool:
     from shutil import which
     import subprocess as sp
 
-    lint_prog = lint_cmd.split(" ")[0]
+    lint_prog = lint_cmd[0]
     if which(lint_prog) is None:
         raise RuntimeError(f"Linter {lint_prog} was not found on the system.")
 
-    proc = sp.run([lint_cmd], stdout=sp.PIPE, stderr=sp.PIPE)
+    proc = sp.run(lint_cmd, stdout=sp.PIPE, stderr=sp.PIPE)
     return bool(proc.returncode)
 
 
@@ -65,8 +65,7 @@ def cli():
 @click.option("--language", help="Language to check style")
 @click.option(
     "--local-path",
-    file_ok=False,
-    type=click.Path,
+    type=click.Path(file_okay=False),
     default=Path(),
     show_default=True,
     help="Local path to repository",
@@ -82,6 +81,7 @@ def check(command, repo, language, local_path, alt_issues):
     if command == "issues":
         return check_issues(repo, alt_issues)
     if command == "style":
+        assert language is not None, "Please specify the target programming language"
         return check_style(local_path, language)
     raise NotImplementedError(f"Command {command} not available")
 
